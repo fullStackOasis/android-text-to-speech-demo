@@ -15,6 +15,10 @@ import java.util.Locale;
 
 /**
  * The only activity. Just a demo for text-to-speech functionality in Android.
+ *
+ * Be wary of "Activity has leaked ServiceConnection
+ * android.speech.tts.TextToSpeech$Connection@44f91c5 that was originally bound here"
+ * on configuration change.
  */
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private static String TAG = MainActivity.class.getCanonicalName();
@@ -31,22 +35,29 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         tvNotification = findViewById(R.id.tv_notification);
         btnSayIt = findViewById(R.id.btn_say_it);
         tvEdit = findViewById(R.id.et_text_input);
+        enableWidgets(false);
+
         checkAvailableTTS();
         btnSayIt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String content = tvEdit.getText().toString();
-                Log.d(TAG, "Conent: " + content);
+                Log.d(TAG, "Content: " + content);
             }
         });
         Log.d(TAG, "done");
     }
 
-    void enableWidgets() {
-        tvEdit.setEnabled(true);
-        btnSayIt.setEnabled(true);
-        tvNotification.setText(R.string.instructions);
+    void enableWidgets(boolean enabled) {
+        tvEdit.setEnabled(enabled);
+        btnSayIt.setEnabled(enabled);
+        if (enabled) {
+            tvNotification.setText(R.string.instructions);
+        } else {
+            tvNotification.setText(R.string.not_ready);
+        }
     }
+
     void checkAvailableTTS() {
         // https://android-developers.googleblog.com/2009/09/introduction-to-text-to-speech-in.html
         Intent checkIntent = new Intent();
@@ -63,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 // success, create the TTS instance
                 Log.d(TAG, "onActivityResult CHECK_VOICE_DATA_PASS");
                 textToSpeech = new TextToSpeech(this, this);
+                enableWidgets(true);
+
             } else {
                 Log.d(TAG, "onActivityResult ACTION_INSTALL_TTS_DATA");
                 // missing data, install it
