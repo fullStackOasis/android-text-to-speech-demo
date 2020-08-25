@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // See https://stackoverflow.com/questions/4242401/tts-error-leaked-serviceconnection-android-speech-tts-texttospeech/4358766
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
