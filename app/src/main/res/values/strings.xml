@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Text to Speech Demo</string>
     <string name="empty"></string>
+    <string name="instructions">Text to speech is ready! Type away.</string>
+    <string name="not_ready">Text to speech is getting ready.</string>
+    <string name="say_it">Say it!</string>
+    <string name="error">Cannot demo text to speech</string>
 </resources>

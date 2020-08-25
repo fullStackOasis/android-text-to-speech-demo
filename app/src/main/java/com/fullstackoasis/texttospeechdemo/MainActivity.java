@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -18,16 +21,32 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private static int MY_DATA_CHECK_CODE = 921;
     private TextToSpeech textToSpeech;
     private TextView tvNotification;
+    private EditText tvEdit;
+    private Button btnSayIt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tvNotification = findViewById(R.id.tvNotification);
+        tvNotification = findViewById(R.id.tv_notification);
+        btnSayIt = findViewById(R.id.btn_say_it);
+        tvEdit = findViewById(R.id.et_text_input);
         checkAvailableTTS();
+        btnSayIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = tvEdit.getText().toString();
+                Log.d(TAG, "Conent: " + content);
+            }
+        });
         Log.d(TAG, "done");
     }
 
+    void enableWidgets() {
+        tvEdit.setEnabled(true);
+        btnSayIt.setEnabled(true);
+        tvNotification.setText(R.string.instructions);
+    }
     void checkAvailableTTS() {
         // https://android-developers.googleblog.com/2009/09/introduction-to-text-to-speech-in.html
         Intent checkIntent = new Intent();
@@ -59,12 +78,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     public void onInit(int status) {
         Log.d(TAG, "onInit");
         if (textToSpeech.isLanguageAvailable(Locale.US) == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
-            tvNotification.setText("Text to Speech is ready. Demo US English.");
+            tvNotification.setText(R.string.instructions);
             textToSpeech.setLanguage(Locale.US);
         } else {
             // TODO FIXME. give users other option.
-            tvNotification.setText("Cannot demo Text to Speech");
+            tvNotification.setText(R.string.error);
         }
-
     }
 }
