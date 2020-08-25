@@ -22,6 +22,7 @@ import java.util.Locale;
  */
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private static String TAG = MainActivity.class.getCanonicalName();
+    private static String TEXT_TO_SPEECH = "TEXT_TO_SPEECH";
     private static int MY_DATA_CHECK_CODE = 921;
     private TextToSpeech textToSpeech;
     private TextView tvNotification;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_main);
         tvNotification = findViewById(R.id.tv_notification);
         btnSayIt = findViewById(R.id.btn_say_it);
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 String content = tvEdit.getText().toString();
                 Log.d(TAG, "Content: " + content);
+                textToSpeech.speak(content, TextToSpeech.QUEUE_ADD, null);
             }
         });
         Log.d(TAG, "done");
@@ -75,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 Log.d(TAG, "onActivityResult CHECK_VOICE_DATA_PASS");
                 textToSpeech = new TextToSpeech(this, this);
                 enableWidgets(true);
-
             } else {
                 Log.d(TAG, "onActivityResult ACTION_INSTALL_TTS_DATA");
                 // missing data, install it
@@ -85,6 +87,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 startActivity(installIntent);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        textToSpeech = null;
     }
 
     @Override
