@@ -22,7 +22,6 @@ import java.util.Locale;
  */
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private static String TAG = MainActivity.class.getCanonicalName();
-    private static String TEXT_TO_SPEECH = "TEXT_TO_SPEECH";
     private static int MY_DATA_CHECK_CODE = 921;
     private TextToSpeech textToSpeech;
     private TextView tvNotification;
